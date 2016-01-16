@@ -4,7 +4,7 @@
 
 
 //
-// LSBMS Lower Symmetric Banded Matrix Storage
+// LSBMS Lower Banded Matrix Storage
 //
 
 //
@@ -34,7 +34,7 @@ void LSBMS::self_free() {
 	delete[] A;
 }
 
-LSBMS::LSBMS(unsigned N, unsigned k) : N(N), k(k) {
+LSBMS::LSBMS(unsigned N, unsigned k) : N(N), k(k), transpose(false) {
 	self_alloc();
 }
 
@@ -46,7 +46,13 @@ double LSBMS::operator() (unsigned m, unsigned n) const {
 	return get(m, n);
 }
 
-double LSBMS::get(unsigned m, unsigned n) const {
+double LSBMS::get(unsigned mm, unsigned nn) const {
+
+	unsigned m = mm, n = nn;
+	if (transpose) {
+		m = nn;
+		n = mm;
+	}
 
 	if (m >= N || n >= N) {
 		std::cerr << "OOB in LSBMS w/"
@@ -55,7 +61,7 @@ double LSBMS::get(unsigned m, unsigned n) const {
 		return 0;
 	}
 
-	if (n > m) return 0;	// upper elements are zero
+	if (n > m) return 0;
 
 	unsigned j = m - n, i = n;
 
@@ -63,7 +69,13 @@ double LSBMS::get(unsigned m, unsigned n) const {
 	else return A[j][i];
 }
 
-bool LSBMS::Set (unsigned m, unsigned n, double a) {
+bool LSBMS::Set (unsigned mm, unsigned nn, double a) {
+
+	unsigned m = mm, n = nn;
+	if (transpose) {
+		m = nn;
+		n = mm;
+	}
 
 	if (m >= N || n >= N) {
 		std::cerr << "Out Of Bounds in LSBMS set("
@@ -86,6 +98,10 @@ bool LSBMS::Set (unsigned m, unsigned n, double a) {
 	}
 	else A[j][i] = a;
 	return true;
+}
+
+void LSBMS::T() {
+	transpose = !transpose;
 }
 
 LSBMS& LSBMS::operator=(const LSBMS& other){

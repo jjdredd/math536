@@ -12,6 +12,7 @@ public:
 	LSBMS& operator=(const LSBMS&);
 	virtual bool Set(unsigned, unsigned, double);
 	virtual double get(unsigned, unsigned) const;
+	void T();
 	friend std::ostream& operator<<(std::ostream&, const LSBMS&);
 
 protected:
@@ -19,6 +20,7 @@ protected:
 	void self_free();
 	unsigned N, k;	   // overall size and band size
 	double **A;
+	bool transpose;
 };
 
 
