@@ -8,11 +8,11 @@ export LDFLAGS = -lm
 SBMS = sbms/sbms.o
 
 
-hw1.elf: hw1.cpp sbms
+hw1.elf: hw1.cpp sbmslib
 	g++ $(CXXFLAGS) $(LDFLAGS) hw1.cpp $(SBMS) -o hw1.elf
 
 
-sbms:	$(SBMS)
+sbmslib:
 	$(MAKE) -C sbms
 
 clean:

@@ -1,19 +1,37 @@
+#include <iostream>
 //
-// Banded matrix storage
+// LSBMS Lower Symmetric Banded Matrix Storage
 //
 
+class LSBMS {
+
+public:
+	LSBMS(unsigned, unsigned);
+	~LSBMS();
+	double operator()(unsigned, unsigned) const;
+	LSBMS& operator=(const LSBMS&);
+	virtual bool Set(unsigned, unsigned, double);
+	virtual double get(unsigned, unsigned) const;
+	friend std::ostream& operator<<(std::ostream&, const LSBMS&);
+
+protected:
+	void self_alloc();
+	void self_free();
+	unsigned N, k;	   // overall size and band size
+	double **A;
+};
 
 
-class SBMS {
+//
+// Symmetric Banded Matrix Storage
+//
+
+class SBMS : public LSBMS {
 
 public:
 	SBMS(unsigned, unsigned);
 	~SBMS();
-	SBMS *Cholesky();
-	double& operator()(unsigned, unsigned);
-
-private:
-	double& at(unsigned, unsigned);
-	unsigned N, k;	   // overall size and band size
-	double **A;
+	LSBMS *Cholesky();
+	virtual bool Set(unsigned, unsigned, double);
+	virtual double get(unsigned, unsigned) const;
 };
