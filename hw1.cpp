@@ -1,12 +1,58 @@
 #include <iostream>
 #include "sbms.hpp"
 
+template<typename T>
+std::ostream& operator<<(std::ostream& os, const std::vector<T>& v) {
+	for (unsigned i = 0; i < v.size() - 1; i++) {
+		os << v[i] << '\t';
+	}
+	os << v[v.size() - 1];
+	return os;
+}
+
+// problem 1
+void Problem_1() {
+
+	unsigned N = 5;
+	SBMS A(N, N);
+	std::vector<double> R, b = {5, 3.55, 2.81428571428571,
+				    2.34642857142857, 2.01746031746032};
+	for (unsigned i = 0; i < N; i++) {
+		for (unsigned j = i; j < N; j++)
+			A.Set(i, j, 1.0/((i + 1) + (j + 1) - 1));
+	}
+
+	std::cout << "Hilbert matrix" << std::endl
+		  << A << std::endl;
+
+	LSBMS *C = A.Cholesky(); // need smart ptrs
+	R = CSolve(*C, b);
+
+	delete C;
+
+	std::cout << "x = " << R << std::endl << std::endl;
+
+	std::cout << "perturbed" << std::endl;
+	A.Set(0, 4, 2.0001);
+
+	std::cout << "Perturbed Hilbert matrix" << std::endl
+		  << A << std::endl;
+
+	C = A.Cholesky();
+	R = CSolve(*C, b);
+
+	std::cout << "x = " << R << std::endl;
+
+	delete C;
+	return;
+}
 
 int main() {
 
+#if 0
+	std::cout << "Testing" << std::endl;
 	unsigned N = 3;
 	SBMS M(N, 2);
-
 
 	M.Set(2, 2, 0.4);
 	
@@ -21,6 +67,10 @@ int main() {
 	LSBMS *C = M.Cholesky();
 
 	std::cout << *C << std::endl;
+#endif
+
+	std::cout << "Problem_1" << std::endl;
+	Problem_1();
 
 	return 0;
 }
