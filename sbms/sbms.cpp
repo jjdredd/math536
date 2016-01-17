@@ -129,6 +129,17 @@ std::ostream& operator<<(std::ostream& os, const LSBMS& obj) {
 	return os;
 }
 
+bool LSBMS::operator==(const LSBMS& other) const {
+
+	std::cerr << " ==  not implemented!" << std::endl;
+
+	for (unsigned i = 0; i < other.N; i++) {
+		for (unsigned j = 0; j < other.N; j++) {}
+	}
+	return true;
+}
+
+
 
 //
 // Symmetric Banded Matrix Storage
@@ -190,6 +201,8 @@ bool SBMS::Set (unsigned m, unsigned n, double a) {
 }
 
 LSBMS * SBMS::Cholesky() {
+
+	// TODO Optimize for zero elements
 	LSBMS *C = new LSBMS(N, N);
 
 	for (unsigned n = 0; n < N; n++) {
@@ -212,4 +225,50 @@ LSBMS * SBMS::Cholesky() {
 	}
 	
 	return C;
+}
+
+SBMS operator*(const SBMS A, const SBMS B) {
+
+	// TODO Optimize for zero elements
+	unsigned N = A.N;
+	SBMS R(N, N);
+	if (N != B.N) {
+		std::cerr << "MAT MUL SIZE ERROR" << std::endl;
+		return R;
+	}
+	for (unsigned i = 0; i < N; i++) {
+		for (unsigned j = 0; j < N; j++) {
+			double s = 0;
+			for (unsigned n = 0; n < N; n++)
+				s += A(i, n) * B(n, j);
+			R.Set(i, j, s);
+		}
+	}
+	return R;
+}
+
+
+// CC^Tx = b
+// Cy = b
+// C^Tx = y
+std::vector<double> CSolve(LSBMS &C, std::vector<double>& b) {
+
+	std::vector<double> R(b.size()), y(b.size());
+	// Cy = b
+	for (int i = 0; i < C.N; i++) {
+		double s = 0;
+		for (int j = 0; j < i; j++)
+			s += C(i, j) * b[j];
+		y[i] = (b[i] - s)/C(i, i);
+	}
+	C.T();
+	// C^Tx = y
+	for (int i = C.N - 1; i >= 0 ; i--) {
+		double s = 0;
+		for (int j = C.N - 1; j > i; j--)
+			s += C(i, j) * b[j];
+		R[i] = (y[i] - s)/C(i, i);
+	}
+	C.T();
+	return R;
 }

@@ -21,6 +21,6 @@ int main() {
 	LSBMS *C = M.Cholesky();
 
 	std::cout << *C << std::endl;
-	
+
 	return 0;
 }

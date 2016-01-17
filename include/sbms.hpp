@@ -1,4 +1,6 @@
 #include <iostream>
+#include <vector>
+
 //
 // LSBMS Lower Symmetric Banded Matrix Storage
 //
@@ -10,10 +12,12 @@ public:
 	~LSBMS();
 	double operator()(unsigned, unsigned) const;
 	LSBMS& operator=(const LSBMS&);
+	bool operator==(const LSBMS&) const;
 	virtual bool Set(unsigned, unsigned, double);
 	virtual double get(unsigned, unsigned) const;
 	void T();
 	friend std::ostream& operator<<(std::ostream&, const LSBMS&);
+	friend std::vector<double> CSolve(LSBMS &, std::vector<double>&);
 
 protected:
 	void self_alloc();
@@ -36,4 +40,5 @@ public:
 	LSBMS *Cholesky();
 	virtual bool Set(unsigned, unsigned, double);
 	virtual double get(unsigned, unsigned) const;
+	friend SBMS operator*(const SBMS, const SBMS);
 };
