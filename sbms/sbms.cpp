@@ -258,7 +258,7 @@ std::vector<double> CSolve(LSBMS &C, std::vector<double>& b) {
 	for (int i = 0; i < C.N; i++) {
 		double s = 0;
 		for (int j = 0; j < i; j++)
-			s += C(i, j) * b[j];
+			s += C(i, j) * y[j];
 		y[i] = (b[i] - s)/C(i, i);
 	}
 	C.T();
@@ -266,7 +266,7 @@ std::vector<double> CSolve(LSBMS &C, std::vector<double>& b) {
 	for (int i = C.N - 1; i >= 0 ; i--) {
 		double s = 0;
 		for (int j = C.N - 1; j > i; j--)
-			s += C(i, j) * b[j];
+			s += C(i, j) * R[j];
 		R[i] = (y[i] - s)/C(i, i);
 	}
 	C.T();

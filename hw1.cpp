@@ -26,6 +26,10 @@ void Problem_1() {
 		  << A << std::endl;
 
 	LSBMS *C = A.Cholesky(); // need smart ptrs
+
+	std::cout << "Cholesky (H)" << std::endl
+		  << *C << std::endl;
+
 	R = CSolve(*C, b);
 
 	delete C;
@@ -33,7 +37,7 @@ void Problem_1() {
 	std::cout << "x = " << R << std::endl << std::endl;
 
 	std::cout << "perturbed" << std::endl;
-	A.Set(0, 4, 2.0001);
+	A.Set(0, 4, .20001);
 
 	std::cout << "Perturbed Hilbert matrix" << std::endl
 		  << A << std::endl;
