@@ -25,14 +25,22 @@ void Problem_1() {
 	std::cout << "Hilbert matrix" << std::endl
 		  << A << std::endl;
 
-	LSBMS *C = A.Cholesky(); // need smart ptrs
+	LSBMS C = A.Cholesky(); // need smart ptrs
 
 	std::cout << "Cholesky (H)" << std::endl
-		  << *C << std::endl;
+		  << C << std::endl;
 
-	R = CSolve(*C, b);
 
-	delete C;
+#if 0
+	std::cout << "check" << std::endl;
+
+	LSBMS CT = C;
+	CT.T();
+
+	std::cout << CT*C << std::endl << std::endl;
+#endif
+
+	R = CSolve(C, b);
 
 	std::cout << "x = " << R << std::endl << std::endl;
 
@@ -43,12 +51,20 @@ void Problem_1() {
 		  << A << std::endl;
 
 	C = A.Cholesky();
-	R = CSolve(*C, b);
+	R = CSolve(C, b);
 
 	std::cout << "x = " << R << std::endl;
 
-	delete C;
 	return;
+}
+
+void Problem_2() {
+
+
+	// C = L - 1/w * D
+	// D = diag(A)
+	// U = A - L
+	// x_k+1 = -(D/w + L)^(-1)[(1-w^(-1))D + U]x_k + (D/w + L)^(-1)b
 }
 
 int main() {

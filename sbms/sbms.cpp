@@ -38,6 +38,16 @@ LSBMS::LSBMS(unsigned N, unsigned k) : N(N), k(k), transpose(false) {
 	self_alloc();
 }
 
+LSBMS::LSBMS(const LSBMS& other) {
+	// change the size
+	N = other.N;
+	k = other.k;
+	self_alloc();
+
+	for (unsigned i = 0; i < k; i++)
+		std::copy(other.A[i], other.A[i] + N - i, A[i]);
+}
+
 LSBMS::~LSBMS() {
 	self_free();
 }
@@ -139,6 +149,27 @@ bool LSBMS::operator==(const LSBMS& other) const {
 	return true;
 }
 
+#if 0
+LSBMS LSBMS::operator*(const LSBMS& ) const {
+
+	// TODO Optimize for zero elements
+	SBMS R(N, N);
+	if (N != B.N) {
+		std::cerr << "MAT MUL SIZE ERROR" << std::endl;
+		return R;
+	}
+	for (unsigned i = 0; i < N; i++) {
+		for (unsigned j = 0; j < N; j++) {
+			double s = 0;
+			for (unsigned n = 0; n < N; n++)
+				s += get(i, n) * B(n, j);
+			R.Set(i, j, s);
+		}
+	}
+	return R;
+}
+#endif
+
 
 
 //
@@ -200,51 +231,31 @@ bool SBMS::Set (unsigned m, unsigned n, double a) {
 	return true;
 }
 
-LSBMS * SBMS::Cholesky() {
+LSBMS SBMS::Cholesky() {
 
 	// TODO Optimize for zero elements
-	LSBMS *C = new LSBMS(N, N);
+	LSBMS C(N, N);
 
 	for (unsigned n = 0; n < N; n++) {
 
 		double s = 0;
 		for (unsigned i = 0; i < n; i++) 
-			s += C->get(n, i) * C->get(n, i);
+			s += C.get(n, i) * C.get(n, i);
 		
-		C->Set(n, n, sqrt(get(n, n) - s));
+		C.Set(n, n, sqrt(get(n, n) - s));
 		
 		for (unsigned i = n + 1; i < N; i++) {
 
 			s = 0;
 			for (unsigned j = 0; j < n; j++)
-				s += C->get(i, j) * C->get(n, j);
+				s += C.get(i, j) * C.get(n, j);
 
-			C->Set(i, n, (get(i, n) - s)/C->get(n, n));
+			C.Set(i, n, (get(i, n) - s)/C.get(n, n));
 		}
 		
 	}
 	
 	return C;
-}
-
-SBMS operator*(const SBMS A, const SBMS B) {
-
-	// TODO Optimize for zero elements
-	unsigned N = A.N;
-	SBMS R(N, N);
-	if (N != B.N) {
-		std::cerr << "MAT MUL SIZE ERROR" << std::endl;
-		return R;
-	}
-	for (unsigned i = 0; i < N; i++) {
-		for (unsigned j = 0; j < N; j++) {
-			double s = 0;
-			for (unsigned n = 0; n < N; n++)
-				s += A(i, n) * B(n, j);
-			R.Set(i, j, s);
-		}
-	}
-	return R;
 }
 
 
