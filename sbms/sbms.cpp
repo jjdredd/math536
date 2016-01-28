@@ -189,8 +189,8 @@ LSBMS LSBMS::operator-(const LSBMS& o) const {
 
 	LSBMS R(N, k);
 
-	if (transpose != o.transpose)
-		std::cerr << "operator- can't use L and U" << std::endl;
+	// if (transpose != o.transpose)
+	// 	std::cerr << "operator- can't use L and U" << std::endl;
 
 	if (N != o.N)
 		std::cerr << "operator- size mismatch" << std::endl;
@@ -208,11 +208,11 @@ LSBMS LSBMS::operator+(const LSBMS& o) const {
 
 	LSBMS R(N, k);
 
-	if (transpose != o.transpose)
-		std::cerr << "operator- can't use L and U" << std::endl;
+	// if (transpose != o.transpose)
+	// 	std::cerr << "operator+ can't use L and U" << std::endl;
 
 	if (N != o.N)
-		std::cerr << "operator- size mismatch" << std::endl;
+		std::cerr << "operator+ size mismatch" << std::endl;
 
 	for (unsigned i = 0; i < k; i ++) {
 		for (unsigned j = 0; j < N - i; j++) {
