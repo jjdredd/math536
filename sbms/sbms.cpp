@@ -34,12 +34,13 @@ void LSBMS::self_free() {
 	delete[] A;
 }
 
-LSBMS::LSBMS(unsigned N, unsigned k) : N(N), k(k), transpose(false) {
+LSBMS::LSBMS(unsigned N, unsigned k) : N(N), k(k), A(NULL), transpose(false) {
 	self_alloc();
 }
 
 LSBMS::LSBMS(const LSBMS& other) {
 	// change the size
+	transpose = other.transpose;
 	N = other.N;
 	k = other.k;
 	self_alloc();
@@ -119,6 +120,7 @@ LSBMS& LSBMS::operator=(const LSBMS& other){
 
 	// change the size
 	self_free();
+	transpose = other.transpose;
 	N = other.N;
 	k = other.k;
 	self_alloc();
@@ -149,34 +151,125 @@ bool LSBMS::operator==(const LSBMS& other) const {
 	return true;
 }
 
-#if 0
-LSBMS LSBMS::operator*(const LSBMS& ) const {
+LSBMS LSBMS::operator*(const LSBMS& B) const {
 
+	if (transpose != B.transpose) {
+		std::cerr << "don't multiply L and U" << std::endl;
+	}
 	// TODO Optimize for zero elements
-	SBMS R(N, N);
+	LSBMS R(N, N);
 	if (N != B.N) {
 		std::cerr << "MAT MUL SIZE ERROR" << std::endl;
 		return R;
 	}
-	for (unsigned i = 0; i < N; i++) {
-		for (unsigned j = 0; j < N; j++) {
+	if (!transpose) {
+		for (unsigned i = 0; i < N; i++) {
+			for (unsigned j = 0; j <= i ; j++) {
+				double s = 0;
+				for (unsigned n = 0; n < N; n++)
+					s += get(i, n) * B(n, j);
+				R.Set(i, j, s);
+			}
+		}
+	} else {
+		for (unsigned i = 0; i < N; i++) {
+			for (unsigned j = i; j < N ; j++) {
+				double s = 0;
+				for (unsigned n = 0; n < N; n++)
+					s += get(i, n) * B(n, j);
+				R.Set(i, j, s);
+			}
+		}
+	}
+
+	return R;
+}
+
+LSBMS LSBMS::operator-(const LSBMS& o) const {
+
+	LSBMS R(N, k);
+
+	if (transpose != o.transpose)
+		std::cerr << "operator- can't use L and U" << std::endl;
+
+	if (N != o.N)
+		std::cerr << "operator- size mismatch" << std::endl;
+
+	for (unsigned i = 0; i < k; i ++) {
+		for (unsigned j = 0; j < N - i; j++) {
+			R.A[i][j] = A[i][j] - o.A[i][j];
+		}
+	}
+
+	return R;
+}
+
+LSBMS LSBMS::operator+(const LSBMS& o) const {
+
+	LSBMS R(N, k);
+
+	if (transpose != o.transpose)
+		std::cerr << "operator- can't use L and U" << std::endl;
+
+	if (N != o.N)
+		std::cerr << "operator- size mismatch" << std::endl;
+
+	for (unsigned i = 0; i < k; i ++) {
+		for (unsigned j = 0; j < N - i; j++) {
+			R.A[i][j] = A[i][j] + o.A[i][j];
+		}
+	}
+
+	return R;
+
+}
+
+std::vector<double> LSBMS::Solve(std::vector<double>& b) {
+
+	std::vector<double> R(b.size());
+	if (!transpose) {
+		// Cy = b
+		for (int i = 0; i < N; i++) {
 			double s = 0;
-			for (unsigned n = 0; n < N; n++)
-				s += get(i, n) * B(n, j);
-			R.Set(i, j, s);
+			for (int j = 0; j < i; j++)
+				s += get(i, j) * R[j];
+			R[i] = (b[i] - s)/get(i, i);
+		}
+	} else {	// transpose
+		// C^Tx = y
+		for (int i = N - 1; i >= 0 ; i--) {
+			double s = 0;
+			for (int j = N - 1; j > i; j--)
+				s += get(i, j) * R[j];
+			R[i] = (b[i] - s)/get(i, i);
 		}
 	}
 	return R;
 }
-#endif
 
+LSBMS LSBMS::Inv() {
 
+	LSBMS Res(N, N);
+	for (unsigned n = 0; n < N; n++) {
+		std::vector<double> I(N, 0), r;
+		I[n] = 1;
+		r = Solve(I);
+		for (unsigned j = n; j < N; j++)
+			Res.Set(n, j, r[j]);
+	}
+	return Res;
+}
 
 //
 // Symmetric Banded Matrix Storage
 //
 
 SBMS::SBMS(unsigned N, unsigned k) : LSBMS(N, k) {}
+
+SBMS::SBMS(const LSBMS& o) : LSBMS(o) {}
+
+SBMS::SBMS(const SBMS& o)  : LSBMS(o) {}
+
 SBMS::~SBMS() {}
 
 double SBMS::get(unsigned m, unsigned n) const {
@@ -264,22 +357,12 @@ LSBMS SBMS::Cholesky() {
 // C^Tx = y
 std::vector<double> CSolve(LSBMS &C, std::vector<double>& b) {
 
-	std::vector<double> R(b.size()), y(b.size());
-	// Cy = b
-	for (int i = 0; i < C.N; i++) {
-		double s = 0;
-		for (int j = 0; j < i; j++)
-			s += C(i, j) * y[j];
-		y[i] = (b[i] - s)/C(i, i);
-	}
+	std::vector<double> R, y;
+
+	y = C.Solve(b);
 	C.T();
-	// C^Tx = y
-	for (int i = C.N - 1; i >= 0 ; i--) {
-		double s = 0;
-		for (int j = C.N - 1; j > i; j--)
-			s += C(i, j) * R[j];
-		R[i] = (y[i] - s)/C(i, i);
-	}
+	R = C.Solve(y);
 	C.T();
+
 	return R;
 }

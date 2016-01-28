@@ -15,6 +15,10 @@ hw1.elf: hw1.cpp sbmslib
 sbmslib:
 	$(MAKE) -C sbms
 
+test:	sbmslib
+	$(MAKE) -C test
+
 clean:
 	rm hw1.elf
 	$(MAKE) clean -C sbms
+	$(MAKE) clean -C test

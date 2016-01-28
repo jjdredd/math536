@@ -20,11 +20,15 @@ for i in range(0, 5):
 
 print(A)
 
-print("=========")
+print("=====[Cholesky]========")
 
 C = numpy.linalg.cholesky(A)
 
 print(C)
+
+print("=====[A squared]========")
+
+print (numpy.matrix(A) * numpy.matrix(A))
 
 print("=========")
 

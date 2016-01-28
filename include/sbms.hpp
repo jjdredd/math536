@@ -9,17 +9,21 @@ class LSBMS {
 
 public:
 	LSBMS(unsigned, unsigned);
-	LSBMS(const LSBMS& other);
+	LSBMS(const LSBMS&);
 	~LSBMS();
 	double operator()(unsigned, unsigned) const;
 	LSBMS& operator=(const LSBMS&);
 	bool operator==(const LSBMS&) const;
+	LSBMS operator-(const LSBMS&) const;
+	LSBMS operator+(const LSBMS&) const;
+	LSBMS Inv();
 	virtual bool Set(unsigned, unsigned, double);
 	virtual double get(unsigned, unsigned) const;
 	void T();
 	friend std::ostream& operator<<(std::ostream&, const LSBMS&);
-	friend std::vector<double> CSolve(LSBMS &, std::vector<double>&);
-	// LSBMS operator*(const LSBMS) const;
+	friend std::vector<double> CSolve(LSBMS&, std::vector<double>&);
+	std::vector<double> Solve(std::vector<double>&);
+	LSBMS operator*(const LSBMS&) const;
 
 protected:
 	void self_alloc();
@@ -38,6 +42,8 @@ class SBMS : public LSBMS {
 
 public:
 	SBMS(unsigned, unsigned);
+	SBMS(const LSBMS&);
+	SBMS(const SBMS&);
 	~SBMS();
 	LSBMS Cholesky();
 	virtual bool Set(unsigned, unsigned, double);

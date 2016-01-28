@@ -20,6 +20,17 @@ int main() {
 	std::cout << M;
 #endif
 
+	unsigned N = 5;
+	SBMS A(N, N);
+
+	for (unsigned i = 0; i < N; i++) {
+		for (unsigned j = i; j < N; j++)
+			A.Set(i, j, 1.0/((i + 1) + (j + 1) - 1));
+	}
+
+	LSBMS C = A.Cholesky();
+
+	std::cout << static_cast<SBMS> (A*A) << std::endl;
 	
 	return 0;
 }
