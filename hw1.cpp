@@ -74,7 +74,7 @@ void Problem_2() {
 
 	std::ofstream ofile("./conv.txt");
 	for (double w = 0.1; w < 2; w += 0.1) {
-		x = SORSolve(A, b, &steps, 1.5, 1e-10);
+		x = SORSolve(A, b, &steps, w, 1e-6);
 		ofile << w << '\t' << steps << std::endl;
 	}
 

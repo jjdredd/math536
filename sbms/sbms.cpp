@@ -414,6 +414,7 @@ std::vector<double> CSolve(LSBMS &C, std::vector<double>& b) {
 std::vector<double> SORSolve(SBMS& A, std::vector<double>& b, unsigned *steps,
 			     double w, double e) {
 
+
 	double error = 0;
 	unsigned N = A.N, k = A.k;
 	std::vector<double> r(N, 0),

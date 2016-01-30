@@ -67,11 +67,8 @@ A = numpy.matrix (
 
 # print(A.I)
 
-exit(0)
 
 print (A)
-
-
 
 print (numpy.linalg.solve(A, numpy.array([9, 10, 11,
                                             11, 11, 11,
