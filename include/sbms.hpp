@@ -21,9 +21,10 @@ public:
 	virtual double get(unsigned, unsigned) const;
 	void T();
 	friend std::ostream& operator<<(std::ostream&, const LSBMS&);
-	friend std::vector<double> CSolve(LSBMS&, std::vector<double>&);
 	std::vector<double> Solve(std::vector<double>&);
 	LSBMS operator*(const LSBMS&) const;
+	LSBMS operator*(const double) const;
+	std::vector<double> operator*(const std::vector<double>&) const;
 
 protected:
 	void self_alloc();
@@ -48,4 +49,11 @@ public:
 	LSBMS Cholesky();
 	virtual bool Set(unsigned, unsigned, double);
 	virtual double get(unsigned, unsigned) const;
+	friend std::vector<double> SORSolve(SBMS&, std::vector<double>&,
+					    unsigned *,
+					    double w = 1, double e = 1e-6);
+	friend void ProblemTwoFill(SBMS &);
 };
+
+
+std::vector<double> CSolve(LSBMS&, std::vector<double>&);

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "sbms.hpp"
 
 template<typename T>
@@ -60,11 +61,27 @@ void Problem_1() {
 
 void Problem_2() {
 
+	// here bandwidth is defined differently
+	// than in problem formulation
+	unsigned N = 10, k = 3, steps;
+	std::vector<double> b = {9, 10, 11,  11, 11, 11, 11,  11, 10, 9};
+	SBMS A(N, k);
+	ProblemTwoFill(A);
+	std::cout << "==========[ A ]==========" << std::endl
+		  << A << std::endl << std::endl;
 
-	// C = L - 1/w * D
-	// D = diag(A)
-	// U = A - L
-	// x_k+1 = -(D/w + L)^(-1)[(1-w^(-1))D + U]x_k + (D/w + L)^(-1)b
+	std::vector<double> x;
+
+	std::ofstream ofile("./conv.txt");
+	for (double w = 0.1; w < 2; w += 0.1) {
+		x = SORSolve(A, b, &steps, 1.5, 1e-10);
+		ofile << w << '\t' << steps << std::endl;
+	}
+
+	std::cout << "x = " << x << std::endl;
+
+	// std::cout << A * x << std::endl;
+
 }
 
 int main() {
@@ -89,8 +106,11 @@ int main() {
 	std::cout << *C << std::endl;
 #endif
 
-	std::cout << "Problem_1" << std::endl;
-	Problem_1();
+	// std::cout << "Problem_1" << std::endl;
+	// Problem_1();
+
+	std::cout << "Problem_2" << std::endl;
+	Problem_2();
 
 	return 0;
 }

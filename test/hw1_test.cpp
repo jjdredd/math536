@@ -28,9 +28,24 @@ int main() {
 			A.Set(i, j, 1.0/((i + 1) + (j + 1) - 1));
 	}
 
+	std::cout << "=========[ A ]==========" << std::endl
+		  << A << std::endl << std::endl;
+
 	LSBMS C = A.Cholesky();
 
+	LSBMS CT = C;
+	CT.T();
+
+	std::cout << "=========[ C ]==========" << std::endl
+		  << C << std::endl << std::endl;
+
 	std::cout << static_cast<SBMS> (A*A) << std::endl;
-	
+
+
+	SBMS B(10, 3);
+	ProblemTwoFill(B);
+	LSBMS II = (static_cast<LSBMS> (B)).Inv();
+	std::cout << II << std::endl << II*B << std::endl;
+
 	return 0;
 }
