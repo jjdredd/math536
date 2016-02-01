@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <cmath>
 #include "sbms.hpp"
+#include "util.hpp"
 
 
 //
@@ -118,7 +119,7 @@ void LSBMS::T() {
 	transpose = !transpose;
 }
 
-LSBMS& LSBMS::operator=(const LSBMS& other){
+LSBMS& LSBMS::operator=(const LSBMS other){
 	if (this == &other) return *this;
 
 	// change the size
@@ -144,7 +145,7 @@ std::ostream& operator<<(std::ostream& os, const LSBMS& obj) {
 	return os;
 }
 
-bool LSBMS::operator==(const LSBMS& other) const {
+bool LSBMS::operator==(LSBMS const& other) const {
 
 	std::cerr << " ==  not implemented!" << std::endl;
 
@@ -154,7 +155,7 @@ bool LSBMS::operator==(const LSBMS& other) const {
 	return true;
 }
 
-LSBMS LSBMS::operator*(const LSBMS& B) const {
+LSBMS LSBMS::operator*(const LSBMS B) const {
 
 	if (transpose != B.transpose && std::min(k, B.k) != 1) {
 		std::cerr << "don't multiply L and U" << std::endl;
@@ -200,7 +201,7 @@ LSBMS LSBMS::operator*(const double a) const {
 }
 
 // can be optimized
-std::vector<double> LSBMS::operator*(const std::vector<double>& b) const {
+std::vector<double> LSBMS::operator*(const std::vector<double> b) const {
 
 	if (b.size() != N) std::cerr << "ERROR: wrong vector/matrix size"
 				     << std::endl;
@@ -214,7 +215,7 @@ std::vector<double> LSBMS::operator*(const std::vector<double>& b) const {
 	return r;
 }
 
-LSBMS LSBMS::operator-(const LSBMS& o) const {
+LSBMS LSBMS::operator-(const LSBMS o) const {
 
 	unsigned kk = std::min(k, o.k);
 	LSBMS R(N, k);
@@ -237,7 +238,7 @@ LSBMS LSBMS::operator-(const LSBMS& o) const {
 	return R;
 }
 
-LSBMS LSBMS::operator+(const LSBMS& o) const {
+LSBMS LSBMS::operator+(const LSBMS o) const {
 
 	unsigned kk = std::min(k, o.k);
 	LSBMS R(N, k);
@@ -448,21 +449,12 @@ std::vector<double> SORSolve(SBMS& A, std::vector<double>& b, unsigned *steps,
 
 	*steps = 0;
 	do {
-		std::vector<double> a = Mu * (*x1), *auxptr, diff(N, 0);
-
-		for (unsigned i = 0; i < N; i++)
-			diff[i] = b[i] - a[i];
-		*x2 = Ml * diff;
+		std::vector<double> a = Mu * (*x1), *auxptr;
+		*x2 = Ml * (b - a);
 		auxptr = x2;
 		x2 = x1;
 		x1 = auxptr;
-		error = 0;
-		for (unsigned i = 0; i < N; i++) {
-			error += (x1->at(i) - x2->at(i))
-				* (x1->at(i) - x2->at(i));
-		}
-		error = sqrt(error);
-		// std::cout << error << std::endl;
+		error = sqrt((*x1 - *x2) * (*x1 - *x2));
 		(*steps)++;
 	} while (error > e);
 

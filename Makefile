@@ -6,19 +6,24 @@ export CXXFLAGS = $(CFLAGS) -std=c++11
 export LDFLAGS = -lm
 
 SBMS = sbms/sbms.o
+UTIL = util/util.o
 
+all: hw1.elf test
 
-hw1.elf: hw1.cpp sbmslib
-	g++ $(CXXFLAGS) $(LDFLAGS) hw1.cpp $(SBMS) -o hw1.elf
+hw1.elf: hw1.cpp sbmslib utillib
+	g++ $(CXXFLAGS) $(LDFLAGS) hw1.cpp $(SBMS) $(UTIL) -o hw1.elf
 
+test:	sbmslib utillib
+	$(MAKE) -C test
 
 sbmslib:
 	$(MAKE) -C sbms
 
-test:	sbmslib
-	$(MAKE) -C test
+utillib:
+	$(MAKE) -C util
 
 clean:
-	rm hw1.elf
-	$(MAKE) clean -C sbms
-	$(MAKE) clean -C test
+	-$(MAKE) clean -C sbms
+	-$(MAKE) clean -C test
+	-$(MAKE) clean -C util
+	-rm hw1.elf

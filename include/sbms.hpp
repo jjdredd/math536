@@ -1,3 +1,6 @@
+#ifndef SBMS_HPP
+#define SBMS_HPP
+
 #include <iostream>
 #include <vector>
 
@@ -12,19 +15,19 @@ public:
 	LSBMS(const LSBMS&);
 	~LSBMS();
 	double operator()(unsigned, unsigned) const;
-	LSBMS& operator=(const LSBMS&);
-	bool operator==(const LSBMS&) const;
-	LSBMS operator-(const LSBMS&) const;
-	LSBMS operator+(const LSBMS&) const;
+	LSBMS& operator=(const LSBMS);
+	bool operator==(LSBMS const&) const;
+	LSBMS operator-(const LSBMS) const;
+	LSBMS operator+(const LSBMS) const;
 	LSBMS Inv();
 	virtual bool Set(unsigned, unsigned, double);
 	virtual double get(unsigned, unsigned) const;
 	void T();
 	friend std::ostream& operator<<(std::ostream&, const LSBMS&);
 	std::vector<double> Solve(std::vector<double>&);
-	LSBMS operator*(const LSBMS&) const;
+	LSBMS operator*(const LSBMS) const;
 	LSBMS operator*(const double) const;
-	std::vector<double> operator*(const std::vector<double>&) const;
+	std::vector<double> operator*(const std::vector<double>) const;
 
 protected:
 	void self_alloc();
@@ -57,3 +60,5 @@ public:
 
 
 std::vector<double> CSolve(LSBMS&, std::vector<double>&);
+
+#endif	// SBMS_HPP
