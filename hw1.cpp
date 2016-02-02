@@ -3,8 +3,8 @@
 #include "sbms.hpp"
 #include "util.hpp"
 
-// problem 1
-void Problem_1() {
+// problem 2
+void Problem_2() {
 
 	unsigned N = 5;
 	SBMS A(N, N);
@@ -51,7 +51,7 @@ void Problem_1() {
 	return;
 }
 
-void Problem_2() {
+void Problem_3() {
 
 	// here bandwidth is defined differently
 	// than in problem formulation
@@ -66,7 +66,7 @@ void Problem_2() {
 
 	std::ofstream ofile("./conv.txt");
 	for (double w = 0.1; w < 2; w += 0.1) {
-		x = SORSolve(A, b, &steps, w, 1e-6);
+		x = SORSolve(A, b, steps, w, 1e-6);
 		ofile << w << '\t' << steps << std::endl;
 	}
 
@@ -98,11 +98,11 @@ int main() {
 	std::cout << *C << std::endl;
 #endif
 
-	// std::cout << "Problem_1" << std::endl;
-	// Problem_1();
+	// std::cout << "Problem_2" << std::endl;
+	// Problem_2();
 
-	std::cout << "Problem_2" << std::endl;
-	Problem_2();
+	std::cout << "Problem_3" << std::endl;
+	Problem_3();
 
 	return 0;
 }

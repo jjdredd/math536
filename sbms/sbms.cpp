@@ -412,7 +412,7 @@ std::vector<double> CSolve(LSBMS &C, std::vector<double>& b) {
 // U = A - L
 // x_k+1 = -(D/w + L)^(-1)[(1-w^(-1))D + U]x_k + (D/w + L)^(-1)b
 //
-std::vector<double> SORSolve(SBMS& A, std::vector<double>& b, unsigned *steps,
+std::vector<double> SORSolve(SBMS& A, std::vector<double>& b, unsigned &steps,
 			     double w, double e) {
 
 
@@ -447,15 +447,13 @@ std::vector<double> SORSolve(SBMS& A, std::vector<double>& b, unsigned *steps,
 	// 	  << Ml << "============[ Mu ] ============" << std::endl
 	// 	  << Mu << std::endl;
 
-	*steps = 0;
+	steps = 0;
 	do {
-		std::vector<double> a = Mu * (*x1), *auxptr;
+		std::vector<double> a = Mu * (*x1);
 		*x2 = Ml * (b - a);
-		auxptr = x2;
-		x2 = x1;
-		x1 = auxptr;
+		PtrXchg((void **)&x1, (void **)&x2);
 		error = sqrt((*x1 - *x2) * (*x1 - *x2));
-		(*steps)++;
+		steps++;
 	} while (error > e);
 
 	std::copy(x1->begin(), x1->end(), r.begin());

@@ -53,7 +53,7 @@ public:
 	virtual bool Set(unsigned, unsigned, double);
 	virtual double get(unsigned, unsigned) const;
 	friend std::vector<double> SORSolve(SBMS&, std::vector<double>&,
-					    unsigned *,
+					    unsigned &,
 					    double w = 1, double e = 1e-6);
 	friend void ProblemTwoFill(SBMS &);
 };

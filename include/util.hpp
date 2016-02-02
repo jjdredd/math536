@@ -19,4 +19,8 @@ std::vector<double> operator-(std::vector<double>, std::vector<double>);
 
 double operator*(std::vector<double>, std::vector<double>);
 
+std::vector<double> operator*(std::vector<double>, double);
+
+void PtrXchg(void **, void **);
+
 #endif	// UTIL_HPP

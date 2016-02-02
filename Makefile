@@ -7,11 +7,15 @@ export LDFLAGS = -lm
 
 SBMS = sbms/sbms.o
 UTIL = util/util.o
+CG = cg/cg.o
 
-all: hw1.elf test
+all: hw1.elf hw2.elf test
 
 hw1.elf: hw1.cpp sbmslib utillib
 	g++ $(CXXFLAGS) $(LDFLAGS) hw1.cpp $(SBMS) $(UTIL) -o hw1.elf
+
+hw2.elf: hw2.cpp cglib utillib
+	g++ $(CXXFLAGS) $(LDFLAGS) hw2.cpp $(CG) $(UTIL) -o hw2.elf
 
 test:	sbmslib utillib
 	$(MAKE) -C test
@@ -22,8 +26,12 @@ sbmslib:
 utillib:
 	$(MAKE) -C util
 
+cglib: utillib
+	$(MAKE) -C cg
+
 clean:
 	-$(MAKE) clean -C sbms
 	-$(MAKE) clean -C test
 	-$(MAKE) clean -C util
 	-rm hw1.elf
+	-rm hw2.elf
