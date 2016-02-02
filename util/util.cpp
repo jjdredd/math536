@@ -47,6 +47,14 @@ std::vector<double> operator*(std::vector<double> v, double c) {
 	return r;
 }
 
+std::vector<double> operator*(double c, std::vector<double> v) {
+
+	std::vector<double> r(v.size(), 0);
+	for (unsigned i = 0; i < v.size(); i++)
+		r[i] = v[i] * c;
+	return r;
+}
+
 void PtrXchg(void **a, void **b) {
 	void *c = *a;
 	*a = *b;

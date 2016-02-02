@@ -2,7 +2,10 @@
 #include "util.hpp"
 #include <cmath>
 
-CSM::CSM(unsigned size) : N(size) {}
+CSM::CSM(unsigned size) : N(size) {
+
+	std::cout << "CSM ctor w/ size = " << N << std::endl;
+}
 
 CSM::~CSM() {}
 

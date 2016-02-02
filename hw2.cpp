@@ -25,7 +25,11 @@ void Problem_2() {
 	b[N - 1] = 999999.9;
 	for (unsigned i = 1; i < N - 1; i++) b[i] = 0.8;
 
-	std::cout << CG(A, b, steps, 1e-7) << std::endl;
+	x = CG(A, b, steps, 1e-7);
+
+	std::cout << x << std::endl;
+
+	std::cout << std::endl << steps << std::endl << A * x << std::endl;
 
 	return;
 }
