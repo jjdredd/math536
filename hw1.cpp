@@ -98,8 +98,8 @@ int main() {
 	std::cout << *C << std::endl;
 #endif
 
-	// std::cout << "Problem_2" << std::endl;
-	// Problem_2();
+	std::cout << "Problem_2" << std::endl;
+	Problem_2();
 
 	std::cout << "Problem_3" << std::endl;
 	Problem_3();

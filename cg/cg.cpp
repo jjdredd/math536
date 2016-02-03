@@ -21,6 +21,14 @@ void CSM::Set(unsigned row, unsigned col, double val) {
 	C.push_back(mc);
 }
 
+double CSM::Get(unsigned m, unsigned n) const {
+
+	for (unsigned ind = 0; ind < C.size(); ind++) {
+		if (m == C[ind].row && n == C[ind].col)	 return Elem[ind];
+	}
+	return 0;
+}
+
 std::vector<double> operator* (const CSM A, const std::vector<double> b) {
 
 	if (b.size() != A.N) {
@@ -61,6 +69,36 @@ std::vector<double> CG(const CSM& A, std::vector<double>& b,
 		u = u + a * p;
 		r = r - a * (A * p);
 		p = r - (1 / ANorm(A, p)) * AProd(A, r, p) * p;
+		error = sqrt(r * r);
+		steps++;
+	} while (error > e);
+
+	return u;
+}
+
+std::vector<double> CGWPC(const CSM& A, std::vector<double>& b,
+		       unsigned &steps, double e) {
+
+	unsigned N = b.size();
+	double a, error;
+	std::vector<double> r, p, u(N, 0);
+	CSM BsqrI(N);
+
+	for (unsigned i = 0; i < N; i++) {
+		BsqrI.Set(i, i, 1 / (A.Get(i, i) * A.Get(i, i)));
+	}
+
+	steps = 0;
+	r = b - A * u;
+
+	p = BsqrI * r;
+
+	do {
+		a = (1 / ANorm(A, p)) * r * p;
+		u = u + a * p;
+		r = r - a * (A * p);
+		std::vector<double> z = BsqrI * r;
+		p = z - (1 / ANorm(A, p)) * AProd(A, z, p) * p;
 		error = sqrt(r * r);
 		steps++;
 	} while (error > e);

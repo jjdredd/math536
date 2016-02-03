@@ -19,6 +19,7 @@ public:
 	~CSM();
 	unsigned Size() const;
 	void Set(unsigned, unsigned, double);
+	double Get(unsigned, unsigned) const;
 	friend std::vector<double> operator* (const CSM,
 					      const std::vector<double>);
 
@@ -33,6 +34,8 @@ private:
 };
 
 std::vector<double> CG(const CSM&, std::vector<double>&, unsigned &, double);
+
+std::vector<double> CGWPC(const CSM&, std::vector<double>&, unsigned &, double);
 
 double AProd(const CSM&, std::vector<double>&, std::vector<double>&);
 
