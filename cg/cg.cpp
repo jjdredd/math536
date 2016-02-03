@@ -82,22 +82,22 @@ std::vector<double> CGWPC(const CSM& A, std::vector<double>& b,
 	unsigned N = b.size();
 	double a, error;
 	std::vector<double> r, p, u(N, 0);
-	CSM BsqrI(N);
+	CSM BI(N);
 
 	for (unsigned i = 0; i < N; i++) {
-		BsqrI.Set(i, i, 1 / (A.Get(i, i) * A.Get(i, i)));
+		BI.Set(i, i, 1 / A.Get(i, i));
 	}
 
 	steps = 0;
 	r = b - A * u;
 
-	p = BsqrI * r;
+	p = BI * r;
 
 	do {
 		a = (1 / ANorm(A, p)) * r * p;
 		u = u + a * p;
 		r = r - a * (A * p);
-		std::vector<double> z = BsqrI * r;
+		std::vector<double> z = BI * r;
 		p = z - (1 / ANorm(A, p)) * AProd(A, z, p) * p;
 		error = sqrt(r * r);
 		steps++;
