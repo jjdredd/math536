@@ -26,6 +26,10 @@ public:
 	friend std::ostream& operator<<(std::ostream&, const LSBMS&);
 	std::vector<double> Solve(std::vector<double>&);
 	LSBMS operator*(const LSBMS) const;
+	// ARGGH operator mess.
+	// should've made them friends and defined commutative operators
+	// (with args the other way round)
+	// well at least for operator*()
 	LSBMS operator*(const double) const;
 	std::vector<double> operator*(const std::vector<double>) const;
 

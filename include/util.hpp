@@ -23,6 +23,8 @@ std::vector<double> operator*(std::vector<double>, double);
 
 std::vector<double> operator*(double, std::vector<double>);
 
+double MaxNorm(std::vector<double>);
+
 void PtrXchg(void **, void **);
 
 #endif	// UTIL_HPP

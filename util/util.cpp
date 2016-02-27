@@ -1,3 +1,4 @@
+#include <cmath>
 #include "util.hpp"
 
 std::vector<double> operator+(std::vector<double> lhs,
@@ -59,4 +60,12 @@ void PtrXchg(void **a, void **b) {
 	void *c = *a;
 	*a = *b;
 	*b = c;
+}
+
+// maximum norm used in hw2 problem3
+double MaxNorm(std::vector<double> v) {
+
+	double r = 0;
+	for (auto a : v) if (fabs(a) > r) r = fabs(a);
+	return r;
 }

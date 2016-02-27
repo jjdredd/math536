@@ -16,12 +16,16 @@ class CSM {
 
 public:
 	CSM(unsigned);
+	CSM(const CSM&);
 	~CSM();
 	unsigned Size() const;
 	void Set(unsigned, unsigned, double);
 	double Get(unsigned, unsigned) const;
+	CSM& operator=(const CSM&);
 	friend std::vector<double> operator* (const CSM,
 					      const std::vector<double>);
+	friend std::vector<double> operator* (const std::vector<double>,
+					      const CSM);
 
 	// obviously, it's better to store row, column numbers and
 	// elements in one struct and make an array (vector) of these

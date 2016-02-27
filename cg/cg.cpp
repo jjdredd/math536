@@ -4,6 +4,12 @@
 
 CSM::CSM(unsigned size) : N(size) {}
 
+CSM::CSM(const CSM& other) {
+	N = other.N;
+	C = other.C;
+	Elem = other.Elem;
+}
+
 CSM::~CSM() {}
 
 unsigned CSM::Size() const {
@@ -29,6 +35,16 @@ double CSM::Get(unsigned m, unsigned n) const {
 	return 0;
 }
 
+CSM& operator=(const CSM& other) {
+
+	if (this == &other) return *this;
+	N = other.N;
+	C = other.C;
+	Elem = other.Elem;
+
+	return *this;
+}
+
 std::vector<double> operator* (const CSM A, const std::vector<double> b) {
 
 	if (b.size() != A.N) {
@@ -45,6 +61,27 @@ std::vector<double> operator* (const CSM A, const std::vector<double> b) {
 	}
 	return r;
 }
+
+std::vector<double> operator* (const std::vector<double> b,
+				      const CSM A) {
+
+	std::cerr << "ERROR: vector x CSM not implemented!!!" << std::endl;
+	// FIXME: rewrite this function. Needs a fix.
+	if (b.size() != A.N) {
+		std::cerr << "size mismatch in operator*" << '\t'
+			  << b.size() << '\t' << A.N << std::endl;
+	}
+	std::vector<double> r(b.size(), 0);
+	for (unsigned i = 0; i < A.N; i++) {
+		for (unsigned ind = 0; ind < A.C.size(); ind++) {
+			if (A.C[ind].row == i) {
+				r[i] += A.Elem[ind] * b[ A.C[ind].col ];
+			}
+		}
+	}
+	return r;
+}
+
 
 double AProd(const CSM& A, std::vector<double>& a, std::vector<double>& b) {
 	return a * (A * b);
