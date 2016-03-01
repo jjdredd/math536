@@ -55,8 +55,9 @@ void Problem_2() {
 
 void Problem_3() {
 
+	char *fname = "./conv.txt";
 	std::cout << "Problem_3" << std::endl
-		  << "output in ./conv.txt" << std::endl;
+		  << "output in " << fname << std::endl;
 
 	// here bandwidth is defined differently
 	// than in problem formulation

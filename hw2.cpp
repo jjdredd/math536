@@ -12,7 +12,7 @@ double BVal(int i, int j, double h, double x1, double y1) {
 }
 
 inline int Space2Mat(int N, int i, int j) {
-	return (N - 2) * (j - 1) + (i - 1);
+	return (N - 2) * (i - 1) + (j - 1);
 }
 
 inline bool IsBoundX(int N, int i, int j) {
@@ -154,7 +154,7 @@ void Problem_2() {
 
 void Problem_3() {
 
-	char *fname = "conv_2.txt";
+	char *fname = "./conv_2.txt";
 	std::cout << "Problem_3" << std::endl
 		  << "output in " << fname << std::endl;
 
@@ -167,11 +167,11 @@ void Problem_3() {
 		unsigned steps;
 		Nsln = SolveLaplaceBVP(h, x1, x2, y1, y2, steps);
 		ofile << log(h) << '\t'
-		      << MaxNorm(Nsln - BVP_Solution(h, x1, x2, y1, y2))
+		      << log(MaxNorm(Nsln - BVP_Solution(h, x1, x2, y1, y2)))
 		      << '\t' << steps << std::endl;
 	}
 
-#if 1
+#if 0
 	h *= 2;
 	int N = (int) floor((x2 - x1)/h);
 	std::ofstream t("tstout.txt");
