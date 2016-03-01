@@ -5,14 +5,35 @@
 #include "cg.hpp"
 #include "util.hpp"
 
+double BVal(int i, int j, double h, double x1, double y1) {
+	double x = x1 + i*h,
+		y = y1 + j*h;
+	return log(x*x + y*y);
+}
+
+inline int Space2Mat(int N, int i, int j) {
+	return (N - 2) * (j - 1) + (i - 1);
+}
+
+inline bool IsBoundX(int N, int i, int j) {
+	return (i == 0) || (i == N - 1);
+}
+
+inline bool IsBoundY(int N, int i, int j) {
+	return (j == 0) || (j == N - 1);
+}
+
 std::vector<double> BVP_Solution(double h, double x1, double x2,
 				 double y1, double y2) {
 
 	std::vector<double> res;
-	int Nx = (int) floor((x2 - x1)/h);
-	int Ny = (int) floor((y2 - y1)/h);
-	for (int i = 0; i < Nx; i++) {
-		for (int j = 0; j < Ny; j++){
+	int N = (int) floor((x2 - x1)/h);
+	if (N != (int) floor((y2 - y1)/h)) {
+		std::cerr << "Error, Nx != Ny in SolveLaplaceBVP()"
+			  << std::endl;
+	}
+	for (int i = 1; i < N - 1; i++) {
+		for (int j = 1; j < N - 1; j++){
 			double x = x1 + i*h,
 				y = y1 + j*h;
 			res.push_back(log(x*x + y*y));
@@ -21,50 +42,54 @@ std::vector<double> BVP_Solution(double h, double x1, double x2,
 	return res;
 }
 
-double BVal(int i, int j, double h, double x1, double y1) {
-	double x = x1 + i*h,
-		y = y1 + j*h;
-	return log(x*x + y*y);
-}
-
-inline double Space2Mat(unsigned size, int i, int j) {
-	return (size - 2) * i + j;
-}
-
-inline bool IsBoundX(unsigned N, int i, int j) {
-	return (i == 0) || (i == N - 1);
-}
-
-inline bool IsBoundY(unsigned N, int i, int j) {
-	return (j == 0) || (j == N - 1);
-}
-
 // ANYONE ORDERED SPAGHETTI??????
-CSM FillMatrix(unsigned N, double h,  double x1, double y1) {
+CSM FillMatrix(int N, double h) {
 
-	CSM A(N);
-	for (int m = 0; m < N; m++) {
-		for (int n = 0; n < N; n++) {
+	unsigned size = (N - 2) * (N - 2);
+	CSM A(size);
+	for (int m = 1; m < N - 1; m++) {
+		for (int n = 1; n < N - 1; n++) {
 			int row = Space2Mat(N, m, n);
 			// y directio fixed, traverse in x direction
 			for (int i = m - 1; i <= m + 1; i += 2) {
-				if (i < 0 || i > N - 1) continue;
 				if (IsBoundX(N, i, n)) continue;
 				int col = Space2Mat(N, i, n);
-				A.Set();
+				A.Set(row, col, 1/(h*h));
 			}
 			// x is fixed, traverse in y direction
 			for (int j = n - 1; j <= n + 1; j += 2) {
-				if (j < 0 || j > N - 1) continue;
 				if (IsBoundY(N, m, j)) continue;
 				int col = Space2Mat(N, m, j);
-				A.Set();
+				A.Set(row, col, 1/(h*h));
 			}
 			// don't forget the central val
-
+			A.Set(row, row, -4/(h*h));
 		}
 	}
 	return A;
+}
+
+std::vector<double> FillRHS(int N, double h, double x1, double y1) {
+
+	unsigned size = (N - 2) * (N - 2);
+	std::vector<double> b(size, 0);
+	// suboptimal but easier to write
+	for (int m = 1; m < N - 1; m++) {
+		for (int n = 1; n < N - 1; n++) {
+			int row = Space2Mat(N, m, n);
+			// y directio fixed, traverse in x direction
+			for (int i = m - 1; i <= m + 1; i += 2) {
+				if (!IsBoundX(N, i, n)) continue;
+				b[row] -= BVal(i, n, h, x1, y1);
+			}
+			// x is fixed, traverse in y direction
+			for (int j = n - 1; j <= n + 1; j += 2) {
+				if (!IsBoundY(N, m, j)) continue;
+				b[row] -= BVal(m, j, h, x1, y1);
+			}
+		}
+	}
+	return b;
 }
 
 std::vector<double> SolveLaplaceBVP(double h, double x1, double x2,
@@ -72,19 +97,22 @@ std::vector<double> SolveLaplaceBVP(double h, double x1, double x2,
 
 	int N = (int) floor((x2 - x1)/h);
 	if (N != (int) floor((y2 - y1)/h)) {
-		std::cout << "Error, Nx != Ny in SolveLaplaceBVP()"
+		std::cerr << "Error, Nx != Ny in SolveLaplaceBVP()"
 			  << std::endl;
-		return res;
 	}
 
-	CSM A = FillMatrix();
-	std::vector<double> b = FillRHS();
+	CSM A = FillMatrix(N, h);
+	std::vector<double> b = FillRHS(N, h, x1, y1);
+
+	std::cout << A << std::endl << N << std::endl;
 
 	return CG(A, b, steps, 1e-7);
 }
 
 // problem 2
 void Problem_2() {
+
+	std::cout << "Problem_2" << std::endl;
 
 	unsigned N = 200, steps;
 	CSM A(N);
@@ -124,13 +152,49 @@ void Problem_2() {
 
 void Problem_3() {
 
+	char *fname = "conv_2.txt";
+	std::cout << "Problem_3" << std::endl
+		  << "output in " << fname << std::endl;
+
+	double h = 0.1;
+	double x1 = 1, x2 = 2;
+	double y1 = 0, y2 = 1;
+	std::ofstream ofile(fname);
+	std::vector<double> Nsln;
+	for (unsigned i = 0; i < 1; i++, h /= 2) {
+		unsigned steps;
+		Nsln = SolveLaplaceBVP(h, x1, x2, y1, y2, steps);
+		ofile << log(h) << '\t'
+		      << MaxNorm(Nsln - BVP_Solution(h, x1, x2, y1, y2))
+		      << '\t' << steps << std::endl;
+	}
+
+
+#if 0
+	int N = (int) floor((x2 - x1)/h);
+	std::ofstream t("tstout.txt");
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			int row = Space2Mat(N, i, j);
+			if (IsBoundX(N, i, j) || IsBoundY(N, i, j)) {
+				t << x1 + i * h << '\t' << y1 + j * h << '\t'
+				  << BVal(i, j, h, x1, y1) << std::endl;
+			} else {
+				t << x1 + i * h << '\t' << y1 + j * h << '\t'
+				  << Nsln[row] << std::endl;
+			}
+		}
+	}
+#endif
+
 	return;
 }
 
 int main() {
 
-	std::cout << "Problem_2" << std::endl;
 	Problem_2();
+
+	Problem_3();
 
 	return 0;
 }

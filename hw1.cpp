@@ -6,6 +6,8 @@
 // problem 2
 void Problem_2() {
 
+	std::cout << "Problem_2" << std::endl;
+
 	unsigned N = 5;
 	SBMS A(N, N);
 	std::vector<double> R, b = {5, 3.55, 2.81428571428571,
@@ -53,6 +55,9 @@ void Problem_2() {
 
 void Problem_3() {
 
+	std::cout << "Problem_3" << std::endl
+		  << "output in ./conv.txt" << std::endl;
+
 	// here bandwidth is defined differently
 	// than in problem formulation
 	unsigned N = 10, k = 3, steps;
@@ -98,10 +103,8 @@ int main() {
 	std::cout << *C << std::endl;
 #endif
 
-	std::cout << "Problem_2" << std::endl;
 	Problem_2();
 
-	std::cout << "Problem_3" << std::endl;
 	Problem_3();
 
 	return 0;

@@ -35,7 +35,7 @@ double CSM::Get(unsigned m, unsigned n) const {
 	return 0;
 }
 
-CSM& operator=(const CSM& other) {
+CSM& CSM::operator=(const CSM& other) {
 
 	if (this == &other) return *this;
 	N = other.N;
@@ -82,6 +82,15 @@ std::vector<double> operator* (const std::vector<double> b,
 	return r;
 }
 
+std::ostream& operator<<(std::ostream& os, const CSM& A) {
+	for (unsigned i = 0; i < A.N; i++) {
+		for (unsigned j = 0; j < A.N; j++) {
+			os << A.Get(i, j) << '\t';
+		}
+		os << std::endl;
+	}
+	return os;
+}
 
 double AProd(const CSM& A, std::vector<double>& a, std::vector<double>& b) {
 	return a * (A * b);

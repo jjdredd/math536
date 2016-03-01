@@ -26,6 +26,7 @@ public:
 					      const std::vector<double>);
 	friend std::vector<double> operator* (const std::vector<double>,
 					      const CSM);
+	friend std::ostream& operator<<(std::ostream&, const CSM&);
 
 	// obviously, it's better to store row, column numbers and
 	// elements in one struct and make an array (vector) of these
