@@ -43,7 +43,7 @@ std::vector<double> BVP_Solution(double h, double x1, double x2,
 }
 
 // ANYONE ORDERED SPAGHETTI??????
-CSM FillMatrix(int N, double h) {
+CSM FillMatrix(int N) {
 
 	unsigned size = (N - 2) * (N - 2);
 	CSM A(size);
@@ -54,16 +54,16 @@ CSM FillMatrix(int N, double h) {
 			for (int i = m - 1; i <= m + 1; i += 2) {
 				if (IsBoundX(N, i, n)) continue;
 				int col = Space2Mat(N, i, n);
-				A.Set(row, col, 1/(h*h));
+				A.Set(row, col, 1);
 			}
 			// x is fixed, traverse in y direction
 			for (int j = n - 1; j <= n + 1; j += 2) {
 				if (IsBoundY(N, m, j)) continue;
 				int col = Space2Mat(N, m, j);
-				A.Set(row, col, 1/(h*h));
+				A.Set(row, col, 1);
 			}
 			// don't forget the central val
-			A.Set(row, row, -4/(h*h));
+			A.Set(row, row, -4);
 		}
 	}
 	return A;
@@ -101,12 +101,14 @@ std::vector<double> SolveLaplaceBVP(double h, double x1, double x2,
 			  << std::endl;
 	}
 
-	CSM A = FillMatrix(N, h);
+	CSM A = FillMatrix(N);
 	std::vector<double> b = FillRHS(N, h, x1, y1);
 
+#if 0
 	std::cout << A << std::endl << N << std::endl;
+#endif
 
-	return CG(A, b, steps, 1e-7);
+	return CG(A, b, steps, 1e-17);
 }
 
 // problem 2
@@ -156,12 +158,12 @@ void Problem_3() {
 	std::cout << "Problem_3" << std::endl
 		  << "output in " << fname << std::endl;
 
-	double h = 0.1;
+	double h = 0.2;
 	double x1 = 1, x2 = 2;
 	double y1 = 0, y2 = 1;
 	std::ofstream ofile(fname);
 	std::vector<double> Nsln;
-	for (unsigned i = 0; i < 1; i++, h /= 2) {
+	for (unsigned i = 0; i < 4; i++, h /= 2) {
 		unsigned steps;
 		Nsln = SolveLaplaceBVP(h, x1, x2, y1, y2, steps);
 		ofile << log(h) << '\t'
@@ -169,8 +171,8 @@ void Problem_3() {
 		      << '\t' << steps << std::endl;
 	}
 
-
-#if 0
+#if 1
+	h *= 2;
 	int N = (int) floor((x2 - x1)/h);
 	std::ofstream t("tstout.txt");
 	for (int i = 0; i < N; i++) {
