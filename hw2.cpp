@@ -42,7 +42,6 @@ std::vector<double> BVP_Solution(double h, double x1, double x2,
 	return res;
 }
 
-// ANYONE ORDERED SPAGHETTI??????
 CSM FillMatrix(int N) {
 
 	unsigned size = (N - 2) * (N - 2);
@@ -103,10 +102,6 @@ std::vector<double> SolveLaplaceBVP(double h, double x1, double x2,
 
 	CSM A = FillMatrix(N);
 	std::vector<double> b = FillRHS(N, h, x1, y1);
-
-#if 0
-	std::cout << A << std::endl << N << std::endl;
-#endif
 
 	return CG(A, b, steps, 1e-17);
 }
@@ -170,24 +165,6 @@ void Problem_3() {
 		      << log(MaxNorm(Nsln - BVP_Solution(h, x1, x2, y1, y2)))
 		      << '\t' << steps << std::endl;
 	}
-
-#if 0
-	h *= 2;
-	int N = (int) floor((x2 - x1)/h);
-	std::ofstream t("tstout.txt");
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
-			int row = Space2Mat(N, i, j);
-			if (IsBoundX(N, i, j) || IsBoundY(N, i, j)) {
-				t << x1 + i * h << '\t' << y1 + j * h << '\t'
-				  << BVal(i, j, h, x1, y1) << std::endl;
-			} else {
-				t << x1 + i * h << '\t' << y1 + j * h << '\t'
-				  << Nsln[row] << std::endl;
-			}
-		}
-	}
-#endif
 
 	return;
 }

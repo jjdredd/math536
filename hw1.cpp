@@ -25,16 +25,6 @@ void Problem_2() {
 	std::cout << "Cholesky (H)" << std::endl
 		  << C << std::endl;
 
-
-#if 0
-	std::cout << "check" << std::endl;
-
-	LSBMS CT = C;
-	CT.T();
-
-	std::cout << CT*C << std::endl << std::endl;
-#endif
-
 	R = CSolve(C, b);
 
 	std::cout << "x = " << R << std::endl << std::endl;
@@ -77,32 +67,9 @@ void Problem_3() {
 	}
 
 	std::cout << "x = " << x << std::endl;
-
-	// std::cout << A * x << std::endl;
-
 }
 
 int main() {
-
-#if 0
-	std::cout << "Testing" << std::endl;
-	unsigned N = 3;
-	SBMS M(N, 2);
-
-	M.Set(2, 2, 0.4);
-	
-	for (unsigned i = 0; i < N; i++)
-		M.Set(i, i, 1.0);
-
-	for (unsigned i = 0; i < N - 1; i++)
-		M.Set(i, i + 1, 0.35);
-
-	std::cout << M << std::endl;
-
-	LSBMS *C = M.Cholesky();
-
-	std::cout << *C << std::endl;
-#endif
 
 	Problem_2();
 
