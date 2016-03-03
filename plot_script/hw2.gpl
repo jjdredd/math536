@@ -1,0 +1,8 @@
+set terminal png
+set output "conv_hw2.png"
+set multiplot layout 2,1
+set ylabel "ln(error)"
+plot "./conv_2.txt" using 1:2 with lines
+set ylabel "CG steps"
+set xlabel "ln(h)"
+plot "./conv_2.txt" using 1:3 with lines

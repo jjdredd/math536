@@ -1,0 +1,5 @@
+set xlabel "Omega"
+set ylabel "Steps"
+set terminal png
+set output "conv_hw1.png"
+plot "./conv.txt" with lines

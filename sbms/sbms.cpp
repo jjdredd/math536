@@ -224,6 +224,7 @@ LSBMS LSBMS::operator-(const LSBMS o) const {
 	else R = o;
 
 	if (transpose != o.transpose && kk != 1)
+		// FIXME!!
 		std::cerr << "operator- can't use L and U" << std::endl;
 
 	if (N != o.N)
@@ -247,6 +248,7 @@ LSBMS LSBMS::operator+(const LSBMS o) const {
 	else R = o;
 
 	if (transpose != o.transpose && kk != 1)
+		// FIXME!
 		std::cerr << "operator+ can't use L and U" << std::endl;
 
 	if (N != o.N)
@@ -292,7 +294,7 @@ LSBMS LSBMS::Inv() {
 		std::vector<double> I(N, 0), r;
 		I[n] = 1;
 		r = Solve(I);
-		for (unsigned j = 0; j < N; j++)
+		for (unsigned j = n; j < N; j++)
 			Res.Set(j, n, r[j]);
        }
 
@@ -427,10 +429,12 @@ std::vector<double> SORSolve(SBMS& A, std::vector<double>& b, unsigned &steps,
 	x2->assign(N, 0);
 	for (unsigned i = 0; i < N; i++) D.Set(i, i, A.get(i, i));
 	for (unsigned i = 0; i < N; i++) {
-		for (unsigned j = 0; j < i; j++) {
+		unsigned b = std::max(0, static_cast<int>(i - k + 1));
+		for (unsigned j = b; j < i; j++) {
 			L.Set(i, j, A.get(i, j));
 		}
 	}
+
 	U = L;
 	U.T();
 
