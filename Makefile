@@ -38,3 +38,4 @@ clean:
 	-$(MAKE) clean -C util
 	-rm hw1.elf
 	-rm hw2.elf
+	-rm hw3.elf
