@@ -17,6 +17,9 @@ hw1.elf: hw1.cpp sbmslib utillib
 hw2.elf: hw2.cpp cglib utillib
 	g++ $(CXXFLAGS) $(LDFLAGS) hw2.cpp $(CG) $(UTIL) -o hw2.elf
 
+hw3.elf: hw3.cpp utillib
+	g++ $(CXXFLAGS) $(LDFLAGS) hw3.cpp $(UTIL) -o hw3.elf
+
 test:	sbmslib utillib
 	$(MAKE) -C test
 

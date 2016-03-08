@@ -455,7 +455,7 @@ std::vector<double> SORSolve(SBMS& A, std::vector<double>& b, unsigned &steps,
 	do {
 		std::vector<double> a = Mu * (*x1);
 		*x2 = Ml * (b - a);
-		PtrXchg((void **)&x1, (void **)&x2);
+		PtrXchg((void **) &x1, (void **) &x2);
 		error = sqrt((*x1 - *x2) * (*x1 - *x2));
 		steps++;
 	} while (error > e);
