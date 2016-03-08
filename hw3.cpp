@@ -32,8 +32,8 @@ std::vector<double> SolveIBVP(double X, unsigned N, double C, double T) {
 	}
 
 	std::copy(u[1], u[1] + N, r.begin());
-	delete u[0];
-	delete u[1];
+	delete[] u[0];
+	delete[] u[1];
 
 	return r;
 }
