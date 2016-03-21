@@ -11,18 +11,6 @@ double BVal(int i, int j, double h, double x1, double y1) {
 	return log(x*x + y*y);
 }
 
-inline int Space2Mat(int N, int i, int j) {
-	return (N - 2) * (i - 1) + (j - 1);
-}
-
-inline bool IsBoundX(int N, int i, int j) {
-	return (i == 0) || (i == N - 1);
-}
-
-inline bool IsBoundY(int N, int i, int j) {
-	return (j == 0) || (j == N - 1);
-}
-
 std::vector<double> BVP_Solution(double h, double x1, double x2,
 				 double y1, double y2) {
 

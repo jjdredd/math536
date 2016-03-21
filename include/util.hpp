@@ -27,4 +27,16 @@ double MaxNorm(std::vector<double>);
 
 void PtrXchg(void **, void **);
 
+inline int Space2Mat(int N, int i, int j) {
+	return (N - 2) * (i - 1) + (j - 1);
+}
+
+inline bool IsBoundX(int N, int i, int j) {
+	return (i == 0) || (i == N - 1);
+}
+
+inline bool IsBoundY(int N, int i, int j) {
+	return (j == 0) || (j == N - 1);
+}
+
 #endif	// UTIL_HPP
