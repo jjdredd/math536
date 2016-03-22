@@ -19,7 +19,9 @@ unsigned CSM::Size() const {
 void CSM::Set(unsigned row, unsigned col, double val) {
 
 	if (row >= N || col >= N) {
-		std::cerr << "row or column out of range" << std::endl;
+		std::cerr << "row or column out of range ("
+			  << row << ", " << col << ")"
+			  << std::endl;
 		return;
 	}
 	MCoor mc = {row, col};
@@ -115,7 +117,7 @@ std::vector<double> CG(const CSM& A, std::vector<double>& b,
 		u = u + a * p;
 		r = r - a * (A * p);
 		p = r - (1 / ANorm(A, p)) * AProd(A, r, p) * p;
-		error = sqrt(r * r);
+		error = sqrt(r * r) / sqrt(N);
 		steps++;
 	} while (error > e);
 

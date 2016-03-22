@@ -5,6 +5,10 @@
 #include "cg.hpp"
 #include "util.hpp"
 
+inline int Space2Mat(int N, int i, int j) {
+	return (N - 2) * (i - 1) + (j - 1);
+}
+
 double BVal(int i, int j, double h, double x1, double y1) {
 	double x = x1 + i*h,
 		y = y1 + j*h;
