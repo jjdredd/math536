@@ -9,7 +9,7 @@ SBMS = sbms/sbms.o
 UTIL = util/util.o
 CG = cg/cg.o
 
-all: hw1.elf hw2.elf hw3.elf test
+all: hw1.elf hw2.elf hw3.elf hw4.elf test
 
 hw1.elf: hw1.cpp sbmslib utillib
 	g++ $(CXXFLAGS) $(LDFLAGS) hw1.cpp $(SBMS) $(UTIL) -o hw1.elf
@@ -42,3 +42,4 @@ clean:
 	-rm hw1.elf
 	-rm hw2.elf
 	-rm hw3.elf
+	-rm hw4.elf

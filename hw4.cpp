@@ -6,6 +6,10 @@
 #include "util.hpp"
 #include "cg.hpp"
 
+///////////////////////
+// NEEDS REFACTORING //
+///////////////////////
+
 inline int Space2Mat(int N, int i, int j) {
 	return (N - 2) * i + (j - 1);
 }
@@ -14,6 +18,7 @@ inline int Space2Mat(int N, int i, int j) {
 // Refactor this to eliminate repetitive code !!!!!!! //
 ////////////////////////////////////////////////////////
 
+// for problem 1
 CSM FillMatrix(unsigned N, double g) {
 
 	unsigned size = (N - 2) * N;
@@ -59,15 +64,11 @@ CSM FillMatrix(unsigned N, double g) {
 	return A;
 }
 
+// for problem 1
 std::vector<double> FillRHS(unsigned N, double g, std::vector<double> v) {
 
 	unsigned size = (N - 2) * N;
 	std::vector<double> b(size, 0);
-
-//////////////////////////
-// FIXME BOUNDARIES!!!! //
-//////////////////////////
-// pay attention to y boundary
 
 	for (int m = 1; m < N - 1; m++) {
 		for (int n = 1; n < N - 1; n++) {
@@ -116,6 +117,7 @@ std::vector<double> FillRHS(unsigned N, double g, std::vector<double> v) {
 	return b;
 }
 
+// for problem 1
 std::vector<double> StepIBVP(unsigned N, double h, double k,
 			     std::vector<double> u, double Error) {
 	// u is IC
@@ -126,6 +128,7 @@ std::vector<double> StepIBVP(unsigned N, double h, double k,
 	return CG(A, b, steps, Error);
 }
 
+// for problem 1
 void PrintSln(unsigned N, double h, std::vector<double> x, std::string file) {
 
 	std::ofstream ofile(file);
@@ -155,14 +158,57 @@ void Problem_1() {
 	}
 	std::cout << "final time " << k * n << ", w/ max error: "
 		  << e << " and this took me " << n << " steps" << std::endl;
-	PrintSln(N, h, x, "hw4_sln.txt");
+	PrintSln(N, h, x, "hw4_prob1_sln.txt");
+}
+
+CSM FillADMat(unsigned N, double k, double h, double Pe,
+	      std::vector<double> u) {
+
+	CSM A(N);
+
+	for (int i = 1; i < N; )
+
+	return A;
+}
+
+// for problem 2
+std::vector<double> SolveAD(unsigned N, double k, double h, double Pe,
+			    std::vector<double> u) {
+
+	std::vector<double> r = u;
+	double e = 1e-10;
+
+	for (int n = 0; n * k < 1; n++) {
+		unsigned steps;
+		CSM A = FillADMat(N, k, h, Pe, r);
+		std::vector<double> b = FillADRHS(N, r);
+
+		r = CG(A, b, steps, e);
+	}
+
+	return r;
+}
+
+void Problem_2() {
+
+	double Pe = 10;
+	double h = 0.01;
+	for (double k = 0.05; k <= 0.21; k *= 2) {
+		std::vector<double> u(N - 1, 0);
+		std::ofstream ofile("hw4_prob2_sln_" + std::to_string(k));
+		u = SolveAD(N, k, h, Pe, u);
+		for (int i = 1; i < N; i++) {
+			ofile << i * h << '\t' << u[i] << std::endl;
+		}
+	}
+
 }
 
 int main() {
 
 	Problem_1();
 
-	// Problem_2();
+	Problem_2();
 
 	return 0;
 }
