@@ -26,7 +26,6 @@ CSM FillMatrix(unsigned N, double g) {
 			A.Set(row, row, 1 + 2*g);
 			// y direction fixed, traverse in x direction
 			for (int i = m - 1; i <= m + 1; i += 2) {
-				// include boundaries here, no check
 				int col = Space2Mat(N, i, n);
 				A.Set(row, col, -g/2);
 			}
@@ -83,10 +82,11 @@ std::vector<double> FillRHS(unsigned N, double g, std::vector<double> v) {
 			}
 			// x is fixed, traverse in y direction
 			for (int j = n - 1; j <= n + 1; j += 2) {
+				double prval;
 				prev = Space2Mat(N, m, j);
-				b[row] += g/2 * v[prev];
-				if (!IsBoundY(N, m, j)) continue;
-				b[row] += ((!j) ? 1 : 0);
+				if (IsBoundY(N, m, j)) prval = j ? 0 : 1;
+				else prval = v[prev];
+				b[row] += g/2 * prval;
 			}
 		}
 	}
@@ -104,9 +104,11 @@ std::vector<double> FillRHS(unsigned N, double g, std::vector<double> v) {
 			b[row] += g * v[prev];
 			// x is fixed, traverse in y direction
 			for (int j = n - 1; j <= n + 1; j += 2) {
-				if (IsBoundY(N, m, j)) continue;
+				double prval;
 				prev = Space2Mat(N, m, j);
-				b[row] +=  g/2 * v[prev];
+				if (IsBoundY(N, m, j)) prval = j ? 0 : 1;
+				else prval = v[prev];
+				b[row] +=  g/2 * prval;
 			}
 		}
 	}
@@ -130,7 +132,7 @@ void PrintSln(unsigned N, double h, std::vector<double> x, std::string file) {
 	for (unsigned j = 1; j < N - 1; j++) {
 		for (unsigned i = 1; i < N - 1; i++) {
 			ofile << i * h << '\t' << j * h << '\t'
-			      << x[j * N + i] << std::endl;
+			      << x[Space2Mat(N, i, j)] << std::endl;
 		}
 		ofile << std::endl;
 	}
@@ -138,8 +140,10 @@ void PrintSln(unsigned N, double h, std::vector<double> x, std::string file) {
 
 void Problem_1() {
 
+	std::cout << "Problem_1 (IBVP)" << std::endl;
+
 	unsigned N = 20;
-	double Error = 1e-17, e = 1, h = 1.0/N;
+	double Error = 1e-7, e = 1, h = 1.0/N;
 	double k = h;
 	std::vector<double> u((N - 2) * N, 0);
 	std::vector<double> x;
@@ -148,10 +152,9 @@ void Problem_1() {
 		x = StepIBVP(N, h, k, u, Error);
 		e = MaxNorm(u - x);
 		u = x;		// better use shallow copy or ptr xchg here
-		std::cout << e << std::endl;
 	}
 	std::cout << "final time " << k * n << ", w/ max error: "
-		  << e << std::endl;
+		  << e << " and this took me " << n << " steps" << std::endl;
 	PrintSln(N, h, x, "hw4_sln.txt");
 }
 
