@@ -143,7 +143,9 @@ void PrintSln(unsigned N, double h, std::vector<double> x, std::string file) {
 
 void Problem_1() {
 
-	std::cout << "Problem_1 (IBVP)" << std::endl;
+	std::string file("hw4_prob1_sln.txt");
+	std::cout << "Problem_1 (IBVP), "
+		  << "output is in " << file << std::endl;
 
 	unsigned N = 20;
 	double Error = 1e-7, e = 1, h = 1.0/N;
@@ -157,16 +159,29 @@ void Problem_1() {
 		u = x;		// better use shallow copy or ptr xchg here
 	}
 	std::cout << "final time " << k * n << ", w/ max error: "
-		  << e << " and this took me " << n << " steps" << std::endl;
-	PrintSln(N, h, x, "hw4_prob1_sln.txt");
+		  << e << " and this took me " << n << " steps in time"
+		  << std::endl;
+	PrintSln(N, h, x, file);
 }
 
-CSM FillADMat(unsigned N, double k, double h, double Pe,
-	      std::vector<double> u) {
 
-	CSM A(N);
+//////////////////////////////
+// MIND BOUNDARY CONDITIONS //
+// ESP LEFT		    //
+//////////////////////////////
 
-	for (int i = 1; i < N; )
+CSM FillADMat(unsigned N, double k, double h, double Pe) {
+
+	CSM A(N - 1);
+
+	for (int i = 1; i < N - 2; i++) {
+		A.Set(i, i, 1 + (2 * k) / (Pe * h * h));
+		A.Set(i, i + 1, (1/2 - 1 / (Pe * h)) * k/h);
+		A.Set(i, i - 1, -(1/2 + 1 / (Pe * h)) * k/h);
+	}
+	// now boundary
+	A.Set(N - 2, N - 2, 1 + (2 * k) / (Pe * h * h));
+	A.Set(N - 2, N - 3, (2 * k) / (Pe * h * h));
 
 	return A;
 }
@@ -178,12 +193,16 @@ std::vector<double> SolveAD(unsigned N, double k, double h, double Pe,
 	std::vector<double> r = u;
 	double e = 1e-10;
 
+	if (N - 1 != u.size()){
+		std::cerr << "ERROR: AD size mismatch" << std::endl;
+		return r;
+	}
+
 	for (int n = 0; n * k < 1; n++) {
 		unsigned steps;
-		CSM A = FillADMat(N, k, h, Pe, r);
-		std::vector<double> b = FillADRHS(N, r);
-
-		r = CG(A, b, steps, e);
+		CSM A = FillADMat(N, k, h, Pe);
+		// due to the scheme for rhs we have just r
+		r = CG(A, r, steps, e);
 	}
 
 	return r;
@@ -191,11 +210,16 @@ std::vector<double> SolveAD(unsigned N, double k, double h, double Pe,
 
 void Problem_2() {
 
+	std::string file("hw4_prob2_sln_");
+	std::cout << "Problem 2, output in" << "output is in " << file
+		  << "<time>" << std::endl;
+
 	double Pe = 10;
 	double h = 0.01;
+	unsigned N = static_cast<unsigned>(floor(1/h));
 	for (double k = 0.05; k <= 0.21; k *= 2) {
 		std::vector<double> u(N - 1, 0);
-		std::ofstream ofile("hw4_prob2_sln_" + std::to_string(k));
+		std::ofstream ofile(file + std::to_string(k));
 		u = SolveAD(N, k, h, Pe, u);
 		for (int i = 1; i < N; i++) {
 			ofile << i * h << '\t' << u[i] << std::endl;
@@ -206,7 +230,7 @@ void Problem_2() {
 
 int main() {
 
-	Problem_1();
+	// Problem_1();
 
 	Problem_2();
 
