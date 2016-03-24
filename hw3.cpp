@@ -48,8 +48,9 @@ void Problem_2() {
 	for (double C : Cval){
 		std::ofstream of(base_name + std::to_string(C) + ".txt");
 		std::vector<double> u = SolveIBVP(X, N, C, T);
-		for (unsigned i = 0; i < N; i++)
+		for (unsigned i = 0; i < N; i++) {
 			of << i * h << '\t' << u[i] << std::endl;
+		}
 	}
 }
 

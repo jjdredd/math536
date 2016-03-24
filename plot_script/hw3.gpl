@@ -2,7 +2,7 @@ set terminal png
 set output "hw3.png"
 set multiplot layout 3,1
 set ylabel "u(x)"
-plot "./hw3_0.900000.txt" with lines title "C = 0.9"
-plot "./hw3_1.000000.txt" with lines title "C = 1"
+plot "./hw3_0.900000.txt" using 1:2 with lines title "C = 0.9"
+plot "./hw3_1.000000.txt" using 1:2 with lines title "C = 1"
 set xlabel "x"
-plot "./hw3_1.100000.txt" with lines title "C = 1.1"
+plot "./hw3_1.100000.txt" using 1:2 with lines title "C = 1.1"

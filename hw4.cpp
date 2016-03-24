@@ -174,14 +174,16 @@ CSM FillADMat(unsigned N, double k, double h, double Pe) {
 
 	CSM A(N - 1);
 
-	for (int i = 1; i < N - 2; i++) {
+	for (int i = 0; i < N - 2; i++) {
 		A.Set(i, i, 1 + (2 * k) / (Pe * h * h));
 		A.Set(i, i + 1, (1/2 - 1 / (Pe * h)) * k/h);
-		A.Set(i, i - 1, -(1/2 + 1 / (Pe * h)) * k/h);
+		if (i != 0) {
+			A.Set(i, i - 1, -(1/2 + 1 / (Pe * h)) * k/h);
+		}
 	}
-	// now boundary
+	// now right boundary
 	A.Set(N - 2, N - 2, 1 + (2 * k) / (Pe * h * h));
-	A.Set(N - 2, N - 3, (2 * k) / (Pe * h * h));
+	A.Set(N - 2, N - 3, -(2 * k) / (Pe * h * h));
 
 	return A;
 }
@@ -197,11 +199,10 @@ std::vector<double> SolveAD(unsigned N, double k, double h, double Pe,
 		std::cerr << "ERROR: AD size mismatch" << std::endl;
 		return r;
 	}
-
-	for (int n = 0; n * k < 1; n++) {
+	CSM A = FillADMat(N, k, h, Pe);
+	for (int n = 0; n * k < 0.8; n++) {
 		unsigned steps;
-		CSM A = FillADMat(N, k, h, Pe);
-		// due to the scheme for rhs we have just r
+		r[0] += (1/2 + k / (Pe * h * h));
 		r = CG(A, r, steps, e);
 	}
 
@@ -211,7 +212,7 @@ std::vector<double> SolveAD(unsigned N, double k, double h, double Pe,
 void Problem_2() {
 
 	std::string file("hw4_prob2_sln_");
-	std::cout << "Problem 2, output in" << "output is in " << file
+	std::cout << "Problem 2, output is in " << file
 		  << "<time>" << std::endl;
 
 	double Pe = 10;
@@ -230,7 +231,7 @@ void Problem_2() {
 
 int main() {
 
-	// Problem_1();
+	Problem_1();
 
 	Problem_2();
 
