@@ -1,0 +1,5 @@
+set terminal png
+set output "hw5_errors.png"
+set xlabel "log(h)"
+set ylabel "log(error)"
+plot "hw5_errors.txt" using 1:2 with lines title ""
