@@ -23,6 +23,9 @@ hw3.elf: hw3.cpp utillib
 hw4.elf: hw4.cpp utillib cglib
 	g++ $(CXXFLAGS) $(LDFLAGS) hw4.cpp $(CG) $(UTIL) -o hw4.elf
 
+hw5.elf: hw5.cpp utillib cglib
+	g++ $(CXXFLAGS) $(LDFLAGS) hw5.cpp $(CG) $(UTIL) -o hw5.elf
+
 test:	sbmslib utillib
 	$(MAKE) -C test
 
@@ -43,3 +46,4 @@ clean:
 	-rm hw2.elf
 	-rm hw3.elf
 	-rm hw4.elf
+	-rm hw5.elf

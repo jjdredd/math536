@@ -4,4 +4,4 @@ set view 60, 75
 set contour
 set xlabel "x"
 set ylabel "y"
-splot "hw4_sln.txt" with lines title "u(x, y)"
+splot "hw4_prob1_sln.txt" with lines title "u(x, y)"

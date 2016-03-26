@@ -118,17 +118,6 @@ std::vector<double> FillRHS(unsigned N, double g, std::vector<double> v) {
 }
 
 // for problem 1
-std::vector<double> StepIBVP(unsigned N, double h, double k,
-			     std::vector<double> u, double Error) {
-	// u is IC
-	CSM A = FillMatrix(N, k / (h * h));
-	std::vector<double> b = FillRHS(N, k / (h * h), u);
-	unsigned steps;
-
-	return CG(A, b, steps, Error);
-}
-
-// for problem 1
 void PrintSln(unsigned N, double h, std::vector<double> x, std::string file) {
 
 	std::ofstream ofile(file);
@@ -147,14 +136,18 @@ void Problem_1() {
 	std::cout << "Problem_1 (IBVP), "
 		  << "output is in " << file << std::endl;
 
-	unsigned N = 20;
-	double Error = 1e-7, e = 1, h = 1.0/N;
+	unsigned steps, N = 20;
+	double Error = 1e-10, e = 1, h = 1.0/N;
 	double k = h;
 	std::vector<double> u((N - 2) * N, 0);
 	std::vector<double> x;
 	int n;
+
+	CSM A = FillMatrix(N, k / (h * h));
+
 	for (n = 0; e > Error; n++) {
-		x = StepIBVP(N, h, k, u, Error);
+		std::vector<double> b = FillRHS(N, k / (h * h), u);
+		x = CG(A, b, steps, Error);
 		e = MaxNorm(u - x);
 		u = x;		// better use shallow copy or ptr xchg here
 	}
