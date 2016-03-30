@@ -59,29 +59,8 @@ double GaussQuad(unsigned N, unsigned i, unsigned j, double h) {
 	double x1 = coor_map(a, b, -1/sqrt(3));
 	double x2 = coor_map(a, b, 1/sqrt(3));
 
-#if 0
-	double e = 0;
-	for (double k = a; k < b; k += h*h) {
-		e += h*h*(A(k) * dl(i, h, k) * dl(j, h, k)
-			  + A((k + h*h)) * dl(i, h, k + h*h)
-			  * dl(j, h, k + h*h)) / 2;
-	}
-	return e;
-
-#else
 	return (b - a)/2 * (A(x1) * dl(i, h, x1) * dl(j, h, x1)
 			    + A(x2) * dl(i, h, x2) * dl(j, h, x2));
-
-#endif
-
-#if 0
-	if (i == N - 1) {
-		return (b - a)/2 * A(x1) * dl(i, h, x1) * dl(j, h, x1);
-	} else {
-		return (b - a)/2 * (A(x1) * dl(i, h, x1) * dl(j, h, x1)
-				    + A(x2) * dl(i, h, x2) * dl(j, h, x2));
-	}
-#endif
 }
 
 // fill galerkin matrix
@@ -110,7 +89,7 @@ void Problem_3() {
 	double e = 1e-10;
 	unsigned steps;
 
-	for (double h = 0.5; h >= 0.025; h /= 2) {
+	for (double h = 0.1; h >= 0.025; h /= 2) {
 		unsigned N = static_cast<unsigned> (floor(1/h));
 		// rhs
 		std::vector<double> b(N - 1, 0);
