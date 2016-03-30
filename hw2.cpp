@@ -153,6 +153,8 @@ void Problem_3() {
 	for (unsigned i = 0; i < 4; i++, h /= 2) {
 		unsigned steps;
 		Nsln = SolveLaplaceBVP(h, x1, x2, y1, y2, steps);
+		std::cout << "took " << steps << " steps for h = "
+			  << h << std::endl;
 		ofile << log(h) << '\t'
 		      << log(MaxNorm(Nsln - BVP_Solution(h, x1, x2, y1, y2)))
 		      << '\t' << steps << std::endl;

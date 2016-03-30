@@ -5,3 +5,8 @@ set contour
 set xlabel "x"
 set ylabel "y"
 splot "hw4_prob1_sln.txt" with lines title "u(x, y)"
+set output "hw4_prob2_AD.png"
+set multiplot layout 3,1
+plot "hw4_prob2_sln_0.050000" using 1:2 with lines title "k = 0.05"
+plot "hw4_prob2_sln_0.100000" using 1:2 with lines title "k = 0.1"
+plot "hw4_prob2_sln_0.200000" using 1:2 with lines title "k = 0.2"

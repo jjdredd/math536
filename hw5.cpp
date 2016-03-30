@@ -30,7 +30,7 @@ double Error(const std::vector<double> &v) {
 	double e = 0;
 	for (auto &x : v) e += x * x;
 
-	return sqrt(e);
+	return sqrt(e/v.size());
 }
 
 double A(double x) {
