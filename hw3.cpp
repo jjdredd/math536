@@ -41,6 +41,10 @@ std::vector<double> SolveIBVP(double X, unsigned N, double C, double T) {
 void Problem_2() {
 
 	std::string base_name("hw3_");
+
+	std::cout << "Problem 2, output is in " << base_name << "C.txt"
+		  << std::endl;
+
 	unsigned N = 100;
 	double X = 10, T = 5, h = X / N;
 	std::vector<double> Cval = {0.9, 1, 1.1};
