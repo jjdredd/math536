@@ -119,7 +119,7 @@ std::vector<double> CG(const CSM& A, std::vector<double>& b,
 		p = r - (1 / ANorm(A, p)) * AProd(A, r, p) * p;
 		error = sqrt(r * r) / sqrt(N);
 		steps++;
-	} while (error > e);
+	} while (error > e && steps <= N);
 
 	return u;
 }
@@ -149,7 +149,7 @@ std::vector<double> CGWPC(const CSM& A, std::vector<double>& b,
 		p = z - (1 / ANorm(A, p)) * AProd(A, z, p) * p;
 		error = sqrt(r * r);
 		steps++;
-	} while (error > e);
+	} while (error > e && steps <= N);
 
 	return u;
 }

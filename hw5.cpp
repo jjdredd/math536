@@ -86,7 +86,7 @@ void Problem_3() {
 	std::cout << "Problem_3, ouput is in " << file << std::endl;
 
 	std::ofstream ofile(file);
-	double e = 1e-10;
+	double e = 1e-7;
 	unsigned steps;
 
 	for (double h = 0.1; h >= 0.025; h /= 2) {

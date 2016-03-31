@@ -95,7 +95,7 @@ std::vector<double> SolveLaplaceBVP(double h, double x1, double x2,
 	CSM A = FillMatrix(N);
 	std::vector<double> b = FillRHS(N, h, x1, y1);
 
-	return CG(A, b, steps, 1e-17);
+	return CG(A, b, steps, 1e-7);
 }
 
 // problem 2
@@ -134,7 +134,7 @@ void Problem_2() {
 
 	std::cout << "ANS:" << std::endl << x << std::endl;
 
-	std::cout << "GCWPC took " << steps << " steps" << std::endl;
+	std::cout << "CGWPC took " << steps << " steps" << std::endl;
 
 	return;
 }

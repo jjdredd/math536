@@ -137,7 +137,7 @@ void Problem_1() {
 		  << "output is in " << file << std::endl;
 
 	unsigned steps, N = 20;
-	double Error = 1e-10, e = 1, h = 1.0/N;
+	double Error = 1e-7, e = 1, h = 1.0/N;
 	double k = h;
 	std::vector<double> u((N - 2) * N, 0);
 	std::vector<double> x;
@@ -186,16 +186,17 @@ std::vector<double> SolveAD(unsigned N, double k, double h, double Pe,
 			    std::vector<double> u) {
 
 	std::vector<double> r = u;
-	double e = 1e-10;
+	double e = 1e-7;
 
 	if (N - 1 != u.size()){
 		std::cerr << "ERROR: AD size mismatch" << std::endl;
 		return r;
 	}
 	CSM A = FillADMat(N, k, h, Pe);
+	std::vector<double> x;
 	for (int n = 0; n * k < 0.8; n++) {
 		unsigned steps;
-		r[0] += (1/2 + k / (Pe * h * h));
+		r[0] += (1/2 + 1 / (Pe * h)) * k/h;
 		r = CG(A, r, steps, e);
 	}
 
@@ -211,7 +212,7 @@ void Problem_2() {
 	double Pe = 10;
 	double h = 0.01;
 	unsigned N = static_cast<unsigned>(floor(1/h));
-	for (double k = 0.05; k <= 0.21; k *= 2) {
+	for (double k = 0.05; k < 0.21; k *= 2) {
 		std::vector<double> u(N - 1, 0);
 		std::ofstream ofile(file + std::to_string(k));
 		u = SolveAD(N, k, h, Pe, u);
