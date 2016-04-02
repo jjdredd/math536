@@ -18,9 +18,9 @@ double ExactSln(double x) {
 
 std::vector<double> FillESln(unsigned N, double h) {
 
-	std::vector<double> b(N - 1, 0);
+	std::vector<double> b(N, 0);
 
-	for (unsigned i = 1; i < N; i++) b[i - 1] = ExactSln(i * h);
+	for (unsigned i = 1; i <= N; i++) b[i - 1] = ExactSln(i * h);
 
 	return b;
 }
@@ -52,27 +52,32 @@ double coor_map(double a, double b, double x) {
 
 // second gauss quad
 // careful! i is the 'central' index
-double GaussQuad(unsigned N, unsigned i, unsigned j, double h) {
+double GaussQuad(unsigned N, int i, int j, double h) {
 
-	double b = std::min(i + 1, N - 1) * h;
-	double a = (i - 1) * h;
-	double x1 = coor_map(a, b, -1/sqrt(3));
-	double x2 = coor_map(a, b, 1/sqrt(3));
+	double q = 0;
+	for (int k = -1; k < 1; k++) {
+		if (i + k < 0  || i + k + 1 > N) continue;
+		double b = (i + k + 1) * h;
+		double a = (i + k) * h;
+		double x1 = coor_map(a, b, -1/sqrt(3));
+		double x2 = coor_map(a, b, 1/sqrt(3));
+		q += (b - a)/2 * (A(x1) * dl(i, h, x1) * dl(j, h, x1)
+				  + A(x2) * dl(i, h, x2) * dl(j, h, x2));
+	}
 
-	return (b - a)/2 * (A(x1) * dl(i, h, x1) * dl(j, h, x1)
-			    + A(x2) * dl(i, h, x2) * dl(j, h, x2));
+	return q;
 }
 
 // fill galerkin matrix
 CSM FillGMat(unsigned N, double h) {
 
-	CSM A(N - 1);
-	for (unsigned i = 1; i < N; i++) {
+	CSM A(N);
+	for (unsigned i = 1; i <= N; i++) {
 		for (unsigned j = i - 1; j <= i + 1 ; j++) {
 			// i, j are coordinates on grid
 			// need to transform (shift) them to
 			// coordinates in the matrix
-			if (j > 0 && j < N) {
+			if (j > 0 && j <= N) {
 				A.Set(i - 1, j - 1, GaussQuad(N, i, j, h));
 			}
 		}
@@ -90,10 +95,10 @@ void Problem_3() {
 	unsigned steps;
 
 	for (double h = 0.1; h >= 0.025; h /= 2) {
+
 		unsigned N = static_cast<unsigned> (floor(1/h));
-		// rhs
-		std::vector<double> b(N - 1, 0);
-		b[N - 2] = A(N * h); // right bc
+		std::vector<double> b(N, 0); // rhs
+		b[N - 1] = A(N * h);	     // right bc
 		CSM M = FillGMat(N, h);
 		std::vector<double> x = CG(M, b, steps, e);
 		ofile << log(h) << '\t' << log(Error(x - FillESln(N, h)))
