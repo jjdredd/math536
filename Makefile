@@ -42,6 +42,7 @@ clean:
 	-$(MAKE) clean -C sbms
 	-$(MAKE) clean -C test
 	-$(MAKE) clean -C util
+	-$(MAKE) clean -C cg
 	-rm hw1.elf
 	-rm hw2.elf
 	-rm hw3.elf

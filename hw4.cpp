@@ -206,7 +206,8 @@ std::vector<double> SolveAD(unsigned N, double k, double h, double Pe,
 void Problem_2() {
 
 	std::string file("hw4_prob2_sln_");
-	std::cout << "Problem 2, output is in " << file
+	std::cout << "Use hw4.py for Problem_2 instead!" << std::endl
+		  << "Problem 2, output is in " << file
 		  << "<time>" << std::endl;
 
 	double Pe = 10;

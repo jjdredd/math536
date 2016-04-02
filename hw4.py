@@ -22,6 +22,8 @@ def FillMat(k):
 
     return A
 
+print ("hw4 problem_2, output is in hw4_sln_2_k.txt")
+print ("use plotting script hw4.py.gpl to plot these results")
 for k in [0.05, 0.1, 0.2]:
     A = FillMat(k)
     b = numpy.zeros(N - 1)
